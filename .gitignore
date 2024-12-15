@@ -1,0 +1,15 @@
+*
+
+!alacritty/
+!alacritty/*
+
+!waybar/
+!waybar/*
+
+!hypr/
+!hypr/*
+
+!fuzzel/
+!fuzzel/*
+
+!.gitignore
