@@ -12,4 +12,7 @@
 !fuzzel/
 !fuzzel/*
 
+!swaync/
+!swaync/*
+
 !.gitignore
