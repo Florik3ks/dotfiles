@@ -140,7 +140,7 @@
         // },
         // "exec": "$HOME/.config/waybar/scripts/mediaplayer.sh 2> /dev/null", // Script in resources folder
         // "exec": "echo '{\"text\": \"hi\"}'", // Filter player based on name
-        "exec": "playerctl metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{playerName}}\"}'",
+        "exec": "playerctl metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{markup_escape(title)}}\", \"alt\": \"{{playerName}}\", \"class\": \"{{playerName}}\"}'",
         "on-click": "playerctl play-pause",
         "on-click-right": "pavucontrol"
     }
