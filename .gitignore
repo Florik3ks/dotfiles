@@ -5,6 +5,8 @@
 
 !waybar/
 !waybar/*
+!waybar/scripts/
+!waybar/scripts/*
 
 !hypr/
 !hypr/*

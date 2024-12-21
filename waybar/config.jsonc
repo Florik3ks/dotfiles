@@ -124,13 +124,23 @@
         "max-length": 50,
         "interval": 2,
         "return-type": "json",
+
         "format-icons": {
-            "Playing": "",
-            "Paused": ""
+            "chromium": "  ",
+            "default": "",
+            "firefox": "  " ,
+            "mpv": "  ",
+            "spotify": "  ",
+            "vlc": "󰕼  "
         },
-        // "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
+        // "status-icons": {
+        //     "Paused": "󰐎",
+        //     "Playing": "",
+        //     "Stopped": ""
+        // },
+        // "exec": "$HOME/.config/waybar/scripts/mediaplayer.sh 2> /dev/null", // Script in resources folder
         // "exec": "echo '{\"text\": \"hi\"}'", // Filter player based on name
-        "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}'",
+        "exec": "playerctl metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{playerName}}\"}'",
         "on-click": "playerctl play-pause",
         "on-click-right": "pavucontrol"
     }
