@@ -124,11 +124,12 @@
 (defpoll volume_icon :interval "1s" "./scripts/volume icon")
 (defpoll volume_percent :interval "100ms" "./scripts/volume percentage")
 (defpoll volume_device_name :interval "5s" "./scripts/volume name")
+(defpoll volume_muted :interval "1s" "./scripts/volume muted")
 
 (defwidget volume []
     (eventbox :onhover "eww update reveal_volume=true" :onhoverlost "eww update reveal_volume=false" :tooltip volume_device_name
         (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
-            (label :text volume_icon :class "icon")
+            (label :text volume_icon :class "icon ${volume_muted ? "red" : ""} small")
             (revealer 
                 :transition "slideleft"
                 :reveal reveal_volume
