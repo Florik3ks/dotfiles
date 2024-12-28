@@ -17,4 +17,10 @@
 !swaync/
 !swaync/*
 
+
+!eww/
+!eww/*
+!eww/scripts/
+!eww/scripts/*
+
 !.gitignore

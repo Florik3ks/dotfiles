@@ -1,0 +1,20 @@
+#!/bin/sh
+
+percentage=`wpctl get-volume @DEFAULT_AUDIO_SINK@ /dev/null | cut -d' ' -f 2 | sed "s/0.//"`
+
+if [ "$percentage" -gt "75" ]; then
+    icon=""
+elif [ "$percentage" -gt "25" ]; then
+    icon=""
+elif [ "$percentage" -gt "0" ]; then
+    icon=""
+else
+    icon=""
+fi
+
+
+[ "$1" = "icon" ] && echo $icon && exit
+[ "$1" = "percentage" ] && echo "$(($percentage + 0))" && exit
+cmd=`wpctl inspect @DEFAULT_SINK@ | grep media.name | cut -d'"' -f 2`
+[ "$1" = "name" ] && echo $cmd && exit
+exit

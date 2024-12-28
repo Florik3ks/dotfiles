@@ -1,0 +1,235 @@
+(defwindow bar
+           :monitor 0
+           :exclusive true
+           :geometry (geometry :x "0%"
+                               :y "8px"
+                               :width "100%"
+                               :height "30px"
+                               :anchor "top center")
+           :stacking "fg"
+           :windowtype "dock"
+  (top_bar))
+
+
+(defwidget top_bar []
+    (box 
+        :class "bar_main"
+        :orientation "h"
+    
+        (left)
+        (center)
+        (right)
+    )
+)
+
+
+
+(defwidget left []
+	(box 
+        :orientation "h" 
+        :space-evenly false  
+        :halign "start"
+        :class "left_modules"
+        :spacing 8
+        
+        (battery)
+        (workspaces)
+))
+
+
+(defwidget right []
+	(box :orientation "h" 
+		 :space-evenly false  
+         :halign "end"
+		 :class "right_modules"
+        
+        (volume)
+        (seperator)
+        (brightness)
+        (seperator)
+        (network)
+        (notifications)
+        (seperator)
+        (systray :class "tray")
+))
+
+
+(defwidget center []
+	(box
+        :orientation "h" 
+		:space-evenly false  
+        :halign "center"
+		:class "center_modules"
+        
+        (clock)
+    )
+)
+
+(defwidget seperator []
+    (label :text "|" :class "seperator")
+)
+
+
+
+(defpoll time :interval "1s" `date +%H:%M:%S`)
+(defpoll datetime :interval "1s" `LC_TIME=en_US.UTF-8 date "+%d %b %H:%M"`)
+
+(defwidget clock []
+    (eventbox :onclick "eww open --toggle calendar"
+        (box 
+            :class "module"
+            :space-evenly "false"
+            :orientation "h"
+            :spacing "3"
+            :tooltip time
+            
+            (label :text datetime)
+        )
+    )
+)
+
+(defwidget cal []
+	(box :class "cal_widget" :orientation "v"
+        (box :class "cal_inner"
+            (calendar :class "cal" 
+                :day  "28"
+                :month "12"
+                :year "2024"
+                :show-heading true
+                :show-week-numbers true
+            )
+        )
+    )
+)
+
+(defwindow calendar
+    :monitor 0
+	:geometry   (geometry
+                    :x "0px" 
+                    :y "0%" 
+                    :anchor "top center"
+                    :width "270px" 
+                    :height "60px"
+                )
+    (cal)
+)
+
+
+
+
+
+
+
+(defvar reveal_volume false)
+(defpoll volume_icon :interval "1s" "./scripts/volume icon")
+(defpoll volume_percent :interval "100ms" "./scripts/volume percentage")
+(defpoll volume_device_name :interval "5s" "./scripts/volume name")
+
+(defwidget volume []
+    (eventbox :onhover "eww update reveal_volume=true" :onhoverlost "eww update reveal_volume=false" :tooltip volume_device_name
+        (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
+            (label :text volume_icon :class "icon")
+            (revealer 
+                :transition "slideleft"
+                :reveal reveal_volume
+                :duration "350ms"
+                (box :space-evenly "false" :spacing "5" 
+                    (scale    
+                        :class "volume_bar"
+                        :value volume_percent
+                        :orientation "h"
+                        :max 101
+                        :min 0
+                        :onchange "wpctl set-volume @DEFAULT_SINK@ {}%" )
+                )
+            )
+            (label :text "${volume_percent > 0 ? "${volume_percent}%" : ""}")
+        )
+    )
+)
+
+
+(defvar reveal_brightness false)
+(defpoll brightness_percent :interval "100ms" "brightnessctl -m | cut -d',' -f4 | tr -d '%'")
+
+(defwidget brightness []
+    (eventbox :onhover "eww update reveal_brightness=true" :onhoverlost "eww update reveal_brightness=false"
+        (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
+            (label :text "󰃠" :class "icon")
+            (revealer 
+                :transition "slideleft"
+                :reveal reveal_brightness
+                :duration "350ms"
+                (box :space-evenly "false" :spacing "5" 
+                    (scale    
+                        :class "brightness_bar"
+                        :value brightness_percent
+                        :orientation "h"
+                        :max 101
+                        :min 0
+                        :onchange "brightnessctl set {}%" )
+                    (label :text "${brightness_percent}%")
+                )
+            )
+        )
+    )
+)
+
+
+
+(defpoll ssid_name :interval "1s" "iwgetid -r")
+(defwidget network []
+    (box :class "module network" :space-evenly "false" :orientation "h" :spacing "5" :tooltip ssid_name
+        (label :text "${strlength(ssid_name) > 0 ? "" : "󰖪"}" :class "icon ${strlength(ssid_name) > 0 ? "small" : "red"} marginright")
+    )
+)
+
+
+(defpoll battery_icon :interval "5s" "./scripts/battery icon")
+(defpoll battery_percent :interval "5s" "./scripts/battery percent")
+(defpoll battery_status :interval "5s" "./scripts/battery status")
+
+(defwidget battery []
+    (box :class "module battery" :space-evenly "false" :orientation "h" :spacing "5" 
+        (label :text battery_icon :class "icon ${battery_status}")
+        (label :text "${battery_percent}%")
+    )
+)
+
+
+(deflisten notification_listener "swaync-client -swb")
+
+(defwidget notifications []
+    (eventbox 
+        :tooltip "${notification_listener.tooltip}"
+        :class "module"   
+        :cursor "pointer"
+        :spacing "5" 
+        :onclick "swaync-client -t -sw"
+        :onrightclick "swaync-client -d -sw"
+        (box
+            (label :text "${arraylength(search(notification_listener.class, "dnd")) > 0 ? "" : ""}" :class "icon small")
+            (label :text {notification_listener.text})
+        )
+    )
+)
+
+
+; https://wiki.hyprland.org/Useful-Utilities/Status-Bars/#configewwyuck but modified
+
+(deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
+(deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace")
+(defwidget workspaces []
+  (eventbox :onscroll "bash ~/.config/eww/scripts/change-active-workspace {} ${current_workspace}" :class "workspaces-widget"
+    (box :space-evenly true
+      (label :text "${workspaces}${current_workspace}" :visible false)
+      (for workspace in workspaces
+        (eventbox :onclick "hyprctl dispatch workspace ${workspace.id}"
+          (box :class "workspace-entry ${workspace.windows > 0 ? "occupied" : "empty"}"
+            (label :text "${workspace.windows > 0 ? " " : " "}" :class "workspace-entry ${workspace.id == current_workspace ? "current" : ""}" )
+            )
+          )
+        )
+      )
+    )
+  )
