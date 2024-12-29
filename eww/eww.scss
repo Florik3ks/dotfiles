@@ -34,6 +34,13 @@ $font: #fff;
     font-size: 18px;
 }
 
+.window{
+    border: 0.5px solid $accent;
+    margin-top: 4px;
+    border-radius: 12;
+    background-color: $background2;
+}
+
 // debug purposes
 .meow{
     background-color: red;
@@ -75,6 +82,7 @@ $font: #fff;
 
     :hover {
         color: $accent;
+        text-shadow: 0 0 5px $accent, 0 0 10px $accent;
     }
 
     * {
@@ -131,13 +139,9 @@ tooltip label {
 
 
 .cal_widget {
-    margin-top: 4px;
     min-width: 400px;
     min-height: 300px;
 
-    background-color: $background2;
-    border-radius: 12;
-    font-family: JetBrainsMono Nerd Font;
     font-size: 18px;
     font-weight: normal;
     border: 0.5px solid $accent;
@@ -197,6 +201,50 @@ calendar:indeterminate {
 
         &.current {
             color: $accent;
+            text-shadow: 0 0 5px $accent, 0 0 10px $accent;
+        }
+    }
+}
+
+
+.media_widget{
+    min-width: 400px;
+    min-height: 200px;
+    padding: 8px;
+    .media_inner{
+        .song_cover_art{
+            background-size: cover;
+            background-position: center;
+            min-height: 180px;
+            min-width: 180px;
+            margin: 12px;
+            border-radius: 12px;
+        }
+        .media_controls{
+            min-width: 200px;
+            padding: 20px;
+            .media_title{
+                color: $accent;
+                text-shadow: 0 0 10px $accent;
+                font-size: 16px;
+                padding: 8px;
+                padding-bottom: 0px;
+            }
+            .media_artist{
+                
+            }
+
+            .media_btn{
+                font-size: 22px;
+                &:hover {
+                    color: $accent;
+                }
+            }
+            .media_playpause{
+                label{
+                    margin: 5px;
+                }
+            }
         }
     }
 }

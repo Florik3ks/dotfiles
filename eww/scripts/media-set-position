@@ -1,0 +1,8 @@
+#!/bin/sh
+
+length=`playerctl metadata --format '{{mpris:length}}'`
+length="$(($length/1000000))"
+
+offset="$(($1*$length/100))"
+
+playerctl position $offset

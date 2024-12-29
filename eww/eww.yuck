@@ -29,12 +29,30 @@
         :orientation "h" 
         :space-evenly false  
         :halign "start"
-        :class "left_modules"
+        :class ""
         :spacing 8
         
-        (battery)
-        (workspaces)
-))
+        (box 
+            :orientation "h" 
+            :space-evenly false  
+            :halign "start"
+            :class "left_modules"
+            :spacing 8
+            
+            (battery)
+            (workspaces)
+        )
+        (box 
+            :orientation "h" 
+            :space-evenly false  
+            :halign "start"
+            :class "left_modules"
+            :spacing 8
+            
+            (media)
+        )
+    )
+)
 
 
 (defwidget right []
@@ -70,7 +88,6 @@
 )
 
 
-
 (defpoll time :interval "1s" `date +%H:%M:%S`)
 (defpoll datetime :interval "1s" `LC_TIME=en_US.UTF-8 date "+%d %b %H:%M"`)
 
@@ -88,8 +105,81 @@
     )
 )
 
+(defpoll media_status :interval "1s" "./scripts/media")
+
+(defwidget media []
+    (eventbox :onclick "eww open --toggle mediawindow" :cursor "pointer"
+        (box 
+            :class "module"
+            :space-evenly "false"
+            :orientation "h"
+            :spacing "3"
+            
+            (label :text {media_status.title} :truncate true)
+        )
+    )
+)
+
+
+(defwindow mediawindow
+    :monitor 0
+	:geometry   (geometry
+                    :x "8px" 
+                    :y "0%" 
+                    :anchor "top left"
+                    :width "270px" 
+                    :height "60px"
+                )
+    (media_details)
+)
+
+
+(defpoll media_playing :interval "1s"  "playerctl status")
+(defpoll media_current :interval "1s"  "playerctl position")
+
+(defwidget media_details []
+	(box :class "media_widget window" :orientation "v"
+        (box :class "media_inner" :space-evenly "false" :spacing "25"
+            (box :class "song_cover_art" :style "background-image: url('${media_status.icon}');")
+            (box :orientation "v" :spacing 20 :space-evenly "false" :class "media_controls"
+                (label :justify "center" :class "media_title" :wrap "true" :text {media_status.title})
+                (label :justify "center" :class "music_artist" :wrap "true" :text {media_status.artist})
+				(box :orientation "h" :spacing 25 :halign "center" :space-evenly "false"
+                    (eventbox
+                        :class "media_btn media_prev" 
+                        :onclick "playerctl previous" 
+                        :cursor "pointer"
+                        
+                        (label :text "")
+                    )
+					(eventbox
+                        :class "media_btn media_playpause" 
+                        :onclick "playerctl play-pause" 
+                        :cursor "pointer"
+
+                        (label :text "${media_playing == "Playing" ? "" : ""}")
+                    )
+                    (eventbox
+                        :class "media_btn media_next" 
+                        :onclick "playerctl next" 
+                        :cursor "pointer"
+                        
+                        (label :text "")
+                    )
+                )
+				(box :class "music_bar" :halign "center" :vexpand "false" :hexpand "false" :space-evenly "false" :spacing "5"
+                    (label :text {media_status.positionf} )
+					(scale :onchange "./scripts/media-set-position {}" :min 0 :active "true" :max 101 :value {media_current / (media_status.length / 100000000)})
+                    (label :text {media_status.lengthf} )
+                )
+            )
+        )
+    )
+)
+
+
 (defwidget cal []
-	(box :class "cal_widget" :orientation "v"
+	(box :class "cal_widget window" :orientation "v"
         (box :class "cal_inner"
             (calendar :class "cal" 
                 :day  "28"
@@ -195,7 +285,6 @@
         :tooltip "${notification_listener.tooltip}"
         :class "module"   
         :cursor "pointer"
-        :spacing "5" 
         :onclick "swaync-client -t -sw"
         :onrightclick "swaync-client -d -sw"
         (box
