@@ -115,7 +115,7 @@
             :orientation "h"
             :spacing "3"
             
-            (label :text {media_status.title} :truncate true)
+            (label :text " ${media_status.title}" :truncate true)
         )
     )
 )
