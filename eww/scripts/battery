@@ -28,10 +28,10 @@ elif [ "$percentage" -gt "20" ]; then
     icon="󰁼"
 elif [ "$percentage" -gt "10" ]; then
     icon="󰁻"
-    notify-send "Battery Low" "${percentage} left"
+    # notify-send "Battery Low" "${percentage} left"
 elif [ "$percentage" -gt "0" ]; then
     icon="󰁺"
-    notify-send -u critical "Battery Low" "${percentage} left"
+    # notify-send -u critical "Battery Low" "${percentage} left"
 else
         icon="󰂃"
 fi
