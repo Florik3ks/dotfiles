@@ -24,11 +24,6 @@ else
     icon=""
 fi
 
+name=`wpctl inspect @DEFAULT_SINK@ | grep media.name | cut -d'"' -f 2`
 
-
-[ "$1" = "icon" ] && echo $icon && exit
-[ "$1" = "percentage" ] && echo "$(($percentage + 0))" && exit
-cmd=`wpctl inspect @DEFAULT_SINK@ | grep media.name | cut -d'"' -f 2`
-[ "$1" = "name" ] && echo $cmd && exit
-[ "$1" = "muted" ] && echo $muted && exit
-exit
+printf '{"icon":"%s","percentage":"%s","name":"%s","muted":"%s"}\n' "$icon" "$percentage" "$name" "$muted"
