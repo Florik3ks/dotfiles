@@ -68,7 +68,7 @@
         (network)
         (notifications)
         (seperator)
-        (systray :class "tray")
+        (systray :class "tray" :spacing "8" :icon-size "20")
 ))
 
 
