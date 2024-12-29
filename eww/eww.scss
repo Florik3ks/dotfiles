@@ -34,6 +34,7 @@ $font: #fff;
     font-size: 18px;
 }
 
+// debug purposes
 .meow{
     background-color: red;
 }
@@ -166,6 +167,7 @@ calender {
 
 calendar:selected {
     color: $font;
+    text-shadow: 0 0 5px $accent, 0 0 10px $accent;
 }
 
 calendar.header {
