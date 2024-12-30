@@ -5,6 +5,7 @@ if [ "$percentage" = "1." ]; then
     percentage="100"
 fi
 
+percentage="$(($percentage + 0))"
 
 muted=false
 
