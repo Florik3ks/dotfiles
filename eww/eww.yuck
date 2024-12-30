@@ -43,6 +43,7 @@
             (workspaces)
         )
         (box 
+            :visible {media_status == "" ? "false" : "true"}
             :orientation "h" 
             :space-evenly false  
             :halign "start"
