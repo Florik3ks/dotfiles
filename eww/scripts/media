@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cmd=`playerctl metadata --format '{"title": "{{trunc(markup_escape(title), 50)}}", "artist": "{{artist}}", "class": "{{playerName}}", "icon": "{{mpris:artUrl}}", "length": "{{mpris:length}}", "lengthf": "{{duration(mpris:length)}}", "positionf": "{{duration(position)}}", "position": "{{position}}", "status": "{{status}}"  }'`
+echo $cmd

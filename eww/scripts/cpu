@@ -1,0 +1,5 @@
+#!/bin/sh
+temp=$(cat /sys/class/hwmon/hwmon2/temp1_input)
+
+printf '{"temperature": "%s"}\n' "$temp"
+

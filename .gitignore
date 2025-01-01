@@ -10,9 +10,17 @@
 
 !hypr/
 !hypr/*
+!hypr/scripts
+!hypr/scripts/*
 
 !fuzzel/
 !fuzzel/*
+
+!eww/
+!eww/*
+
+!eww/scripts/
+!eww/scripts/*
 
 !swaync/
 !swaync/*

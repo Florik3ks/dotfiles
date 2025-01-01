@@ -8,7 +8,7 @@
         "cpu",
         "temperature",
         "custom/gpu",
-        "memory"
+        "memory",
     ],
     "modules-center": [
         // "user",

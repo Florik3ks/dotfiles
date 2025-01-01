@@ -1,0 +1,62 @@
+#!/bin/sh
+BAT=`ls /sys/class/power_supply | grep BAT | head -n 1`
+
+bat=/sys/class/power_supply/${BAT}/
+
+percentage="$(cat "$bat/capacity")"
+status=$(cat "$bat/status")
+
+if [ $status = Full ]; then 
+    icon="󰂄"
+elif [ $status = Charging ]; then
+    icon=""
+elif [ "$percentage" -gt "90" ]; then
+    icon="󰁹"
+elif [ "$percentage" -gt "80" ]; then
+    icon="󰂂"
+elif [ "$percentage" -gt "70" ]; then
+    icon="󰂁"
+elif [ "$percentage" -gt "60" ]; then
+    icon="󰂀"
+elif [ "$percentage" -gt "50" ]; then
+    icon="󰁿"
+elif [ "$percentage" -gt "40" ]; then
+    icon="󰁾"
+elif [ "$percentage" -gt "30" ]; then
+    icon="󰁽"
+elif [ "$percentage" -gt "20" ]; then
+    icon="󰁼"
+elif [ "$percentage" -gt "10" ]; then
+    icon="󰁻"
+    # notify-send "Battery Low" "${percentage} left"
+elif [ "$percentage" -gt "0" ]; then
+    icon="󰁺"
+    # notify-send -u critical "Battery Low" "${percentage} left"
+else
+        icon="󰂃"
+fi
+
+calc(){ awk "BEGIN { print "$*" }"; }
+
+CHARGE_NOW="$(cat "$bat/charge_now")"
+CURRENT_NOW="$(cat "$bat/current_now")"
+
+REMAINING_HOURS="$(calc $CHARGE_NOW/$CURRENT_NOW)"
+REMAINING_MINS="$(calc $REMAINING_HOURS*60%60)"
+# round
+REMAINING_HOURS="$(echo $REMAINING_HOURS | cut -d'.' -f 1)"
+REMAINING_MINS="$(echo $REMAINING_MINS | cut -d'.' -f 1)"
+# format with leading 0
+REMAINING_HOURS="$(printf '%02d' $REMAINING_HOURS)"
+REMAINING_MINS="$(printf '%02d' $REMAINING_MINS)"
+
+# echo $REMAINING_HOURS
+# echo $REMAINING_MINS
+
+printf '{"icon":"%s","percentage":"%s","status":"%s","remaining":"%sh %smin remaining"}\n' "$icon" "$percentage" "$status" "$REMAINING_HOURS" "$REMAINING_MINS"
+
+# [ "$1" = "icon" ] && icon && exit
+# [ "$1" = "percent" ] && percent && exit
+# [ "$1" = "status" ] && status && exit
+# [ "$1" = "remaining" ] && remaining && exit
+# exit
