@@ -232,7 +232,7 @@
 (deflisten cpu_util "vmstat 2 | awk '{print 100-($15); system(\"\")}'")
 (defwidget cpu []
     (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
-        (circular-progress :value cpu_util :class "cpu" :thickness 3 :start-at 75
+        (circular-progress :value cpu_util :class "cpu circle" :thickness 3 :start-at 75
             (button 
                 :class "btn"
                 :limit-width 2
@@ -253,7 +253,7 @@
 (defpoll gpu_status :interval "1s" "./scripts/gpu")
 (defwidget gpu []
     (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
-        (circular-progress :value {gpu_status.utilization} :class "gpu" :thickness 3 :start-at 75
+        (circular-progress :value {gpu_status.utilization} :class "gpu circle" :thickness 3 :start-at 75
             (button 
                 :class "btn"
                 :limit-width 2
@@ -274,7 +274,7 @@
 (defpoll memory_status :interval "1s" "./scripts/memory")
 (defwidget memory []
     (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
-        (circular-progress :value {memory_status.utilization * 100 / (memory_status.max)} :class "memory" :thickness 3 :start-at 75
+        (circular-progress :value {memory_status.utilization * 100 / (memory_status.max)} :class "memory circle" :thickness 3 :start-at 75
             (button 
                 :class "btn"
                 :limit-width 2
