@@ -74,7 +74,7 @@
 		 :class "right_modules"
         
         (eventbox
-            :onclick "eww update reveal_detailed_usage=${reveal_detailed_usage ? "false" : "true"}" :cursor "pointer"
+            :onclick "${EWW_CMD} update reveal_detailed_usage=${reveal_detailed_usage ? "false" : "true"}" :cursor "pointer"
             (box :orientation "h" 
             :space-evenly false  
             :spacing -5
@@ -204,9 +204,9 @@
 	(box :class "cal_widget window" :orientation "v"
         (box :class "cal_inner"
             (calendar :class "cal" 
-                :day  "28"
-                :month "12"
-                :year "2024"
+                :day {formattime(EWW_TIME, "%d")}
+                :month {formattime(EWW_TIME, "%m")}
+                :year {formattime(EWW_TIME, "%Y")}
                 :show-heading true
                 :show-week-numbers true
             )
@@ -287,7 +287,7 @@
             :transition "slideleft"
             :reveal reveal_detailed_usage
             :duration "350ms"
-            (label :text "${round(memory_status.utilization * 100 / (memory_status.max), 0)}% ${memory_status.utilization}MiB / ${memory_status.max}MiB |")
+            (label :text "${round(memory_status.utilization * 100 / (memory_status.max), 0)}% ${memory_status.utilization}MiB / ${memory_status.max}MiB")
         )
     )
 )
@@ -298,7 +298,7 @@
 (defpoll volume_status :interval "1s" "./scripts/volume")
 
 (defwidget volume []
-    (eventbox :onhover "eww update reveal_volume=true" :onhoverlost "eww update reveal_volume=false" :tooltip {volume_status.name} :onscroll "./scripts/onvolumescroll {}"
+    (eventbox :onhover "${EWW_CMD} update reveal_volume=true" :onhoverlost "${EWW_CMD} update reveal_volume=false" :tooltip {volume_status.name} :onscroll "./scripts/onvolumescroll {}"
         (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
             (label :text {volume_status.icon} :class "icon ${volume_status.muted ? "red" : ""} small")
             (revealer 
@@ -325,7 +325,7 @@
 (defpoll brightness_percent :interval "100ms" "brightnessctl -m | cut -d',' -f4 | tr -d '%'")
 
 (defwidget brightness []
-    (eventbox :onhover "eww update reveal_brightness=true" :onhoverlost "eww update reveal_brightness=false"
+    (eventbox :onhover "${EWW_CMD} update reveal_brightness=true" :onhoverlost "${EWW_CMD} update reveal_brightness=false"
         (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
             (label :text "󰃠" :class "icon")
             (revealer 

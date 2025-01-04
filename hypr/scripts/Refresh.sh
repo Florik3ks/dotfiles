@@ -11,7 +11,7 @@ for _prs in "${_ps[@]}"; do
     exec "${_prs}" &
 done
 
-eww open bar &
 eww open bar_other_monitor &
+eww open bar &
 
 exit 0
