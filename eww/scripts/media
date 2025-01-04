@@ -4,7 +4,7 @@ cmd=`playerctl metadata --format '{"title": "{{trunc(markup_escape(title), 50)}}
 
 declare -A replaces
 replaces["&quot;"]="\\\\\""
-replaces["&apost;"]="'"
+replaces["&apos;"]="'"
 replaces["&lt;"]="<"
 replaces["&gt;"]=">"
 replaces["&amp;"]="&"
