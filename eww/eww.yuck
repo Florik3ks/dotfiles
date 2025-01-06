@@ -139,7 +139,7 @@
             :orientation "h"
             :spacing "3"
             
-            (label :text "${media_status.status == "Playing" ? "" : ""} ${media_status.title}" :truncate true)
+            (label :text "${media_status.status == "Playing" ? "" : ""} ${media_status.title} - ${media_status.artist}" :truncate true)
         )
     )
 )
@@ -295,8 +295,7 @@
 
 
 (defvar reveal_volume false)
-(defpoll volume_status :interval "1s" "./scripts/volume")
-(deflisten volume_percent "playerctl -F volume")
+(deflisten volume_status "./scripts/volume")
 
 (defwidget volume []
     (eventbox :onhover "${EWW_CMD} update reveal_volume=true" :onhoverlost "${EWW_CMD} update reveal_volume=false" :tooltip {volume_status.name} :onscroll "./scripts/onvolumescroll {}"
@@ -309,14 +308,14 @@
                 (box :space-evenly "false" :spacing "5" 
                     (scale    
                         :class "volume_bar"
-                        :value {round(volume_percent * 100, 0)}
+                        :value {volume_status.percentage}
                         :orientation "h"
                         :max 101
                         :min 0
                         :onchange "wpctl set-volume @DEFAULT_SINK@ {}%" )
                 )
             )
-            (label :text "${volume_percent > 0 ? '${round(volume_percent * 100, 0)}%' : ""}")
+            (label :text "${volume_status.percentage > 0 ? '${volume_status.percentage}%' : ""}")
         )
     )
 )
