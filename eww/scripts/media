@@ -1,6 +1,18 @@
 #!/bin/sh
 
 cmd=`playerctl metadata --format '{"title": "{{trunc(markup_escape(title), 50)}}", "artist": "{{artist}}", "class": "{{playerName}}", "icon": "{{mpris:artUrl}}", "length": "{{mpris:length}}", "lengthf": "{{duration(mpris:length)}}", "positionf": "{{duration(position)}}", "position": "{{position}}", "status": "{{status}}"  }' 2> /dev/null`
+
+playerCount=`playerctl -l | wc -l`
+for i in $(seq 1 $playerCount);
+do
+  status=`playerctl status`
+  if [[ -n "$status" && "$status" == "Playing" ]]; then
+    break
+  fi
+  playerctld shift
+done
+
+
 if [[ -z "$cmd" ]]; then
   playerctld shift
   exit 0
