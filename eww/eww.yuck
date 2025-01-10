@@ -112,9 +112,6 @@
 )
 
 
-(defpoll time :interval "1s" `date +%H:%M:%S`)
-(defpoll datetime :interval "1s" `LC_TIME=en_US.UTF-8 date "+%d %b %H:%M"`)
-
 (defwidget clock []
     (eventbox :onclick "eww open --toggle calendar" :cursor "pointer"
         (box 
@@ -122,9 +119,9 @@
             :space-evenly "false"
             :orientation "h"
             :spacing "3"
-            :tooltip time
+            :tooltip {formattime(EWW_TIME, "%H:%M:%S")}
             
-            (label :text datetime)
+            (label :text {formattime(EWW_TIME, "%d %b %H:%M")})
         )
     )
 )
@@ -201,12 +198,9 @@
 
 
 (defwidget cal []
-	(box :class "cal_widget window" :orientation "v"
+    (box :class "cal_widget window" :orientation "v"
         (box :class "cal_inner"
             (calendar :class "cal" 
-                :day {formattime(EWW_TIME, "%d")}
-                :month {formattime(EWW_TIME, "%m")}
-                :year {formattime(EWW_TIME, "%Y")}
                 :show-heading true
                 :show-week-numbers true
             )
@@ -216,7 +210,7 @@
 
 (defwindow calendar
     :monitor 0
-	:geometry   (geometry
+    :geometry   (geometry
                     :x "0px" 
                     :y "0%" 
                     :anchor "top center"
