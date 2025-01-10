@@ -23,7 +23,8 @@ replaces["&quot;"]="\\\\\""
 replaces["&apos;"]="'"
 replaces["&lt;"]="<"
 replaces["&gt;"]=">"
-replaces["&amp;"]="&"
+replaces["&amp;"]="\&"
+
 
 for key in "${!replaces[@]}"
 do
