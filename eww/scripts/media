@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cmd=`playerctl metadata --format '{"title": "{{trunc(markup_escape(title), 50)}}", "artist": "{{artist}}", "class": "{{playerName}}", "icon": "{{mpris:artUrl}}", "length": "{{mpris:length}}", "lengthf": "{{duration(mpris:length)}}", "positionf": "{{duration(position)}}", "position": "{{position}}", "status": "{{status}}"  }' 2> /dev/null`
+cmd=`playerctl metadata --format '{"title": "{{markup_escape(title)}}", "artist": "{{artist}}", "class": "{{playerName}}", "icon": "{{mpris:artUrl}}", "length": "{{mpris:length}}", "lengthf": "{{duration(mpris:length)}}", "positionf": "{{duration(position)}}", "position": "{{position}}", "status": "{{status}}"  }' 2> /dev/null`
 
 playerCount=`playerctl -l | wc -l`
 for i in $(seq 1 $playerCount);
