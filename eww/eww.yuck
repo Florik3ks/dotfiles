@@ -126,7 +126,7 @@
     )
 )
 
-(defpoll media_status :interval "1s" "./scripts/media")
+(deflisten media_status "./scripts/media")
 
 (defwidget media []
     (eventbox :onclick "eww open --toggle mediawindow" :cursor "pointer"

@@ -1,33 +1,40 @@
 #!/bin/sh
 
-cmd=`playerctl metadata --format '{"title": "{{markup_escape(title)}}", "artist": "{{artist}}", "class": "{{playerName}}", "icon": "{{mpris:artUrl}}", "length": "{{mpris:length}}", "lengthf": "{{duration(mpris:length)}}", "positionf": "{{duration(position)}}", "position": "{{position}}", "status": "{{status}}"  }' 2> /dev/null`
+media() {
+  cmd=`playerctl metadata --format '{"title": "{{markup_escape(title)}}", "artist": "{{artist}}", "class": "{{playerName}}", "icon": "{{mpris:artUrl}}", "length": "{{mpris:length}}", "lengthf": "{{duration(mpris:length)}}", "positionf": "{{duration(position)}}", "position": "{{position}}", "status": "{{status}}"  }' 2> /dev/null`
 
-playerCount=`playerctl -l | wc -l`
-for i in $(seq 1 $playerCount);
-do
-  status=`playerctl status`
-  if [[ -n "$status" && "$status" == "Playing" ]]; then
-    break
+  playerCount=`playerctl -l | wc -l`
+  for i in $(seq 1 $playerCount);
+  do
+    status=`playerctl status`
+    if [[ -n "$status" && "$status" == "Playing" ]]; then
+      break
+    fi
+    playerctld shift
+  done
+
+
+  if [[ -z "$cmd" ]]; then
+    playerctld shift
+    exit 0
   fi
-  playerctld shift
+
+  declare -A replaces
+  replaces["&quot;"]="\\\\\""
+  replaces["&apos;"]="'"
+  replaces["&lt;"]="<"
+  replaces["&gt;"]=">"
+  replaces["&amp;"]="\&"
+
+
+  for key in "${!replaces[@]}"
+  do
+      cmd=`echo "$cmd" | sed -r "s/$key/${replaces[$key]}/g"`
+  done
+  echo $cmd
+}
+
+media
+playerctl metadata -F --format '{"title": "{{markup_escape(title)}}", "artist": "{{artist}}", "class": "{{playerName}}", "icon": "{{mpris:artUrl}}", "length": "{{mpris:length}}", "lengthf": "{{duration(mpris:length)}}", "positionf": "{{duration(position)}}", "position": "{{position}}", "status": "{{status}}"  }' | while read -r line; do
+  media
 done
-
-
-if [[ -z "$cmd" ]]; then
-  playerctld shift
-  exit 0
-fi
-
-declare -A replaces
-replaces["&quot;"]="\\\\\""
-replaces["&apos;"]="'"
-replaces["&lt;"]="<"
-replaces["&gt;"]=">"
-replaces["&amp;"]="\&"
-
-
-for key in "${!replaces[@]}"
-do
-    cmd=`echo "$cmd" | sed -r "s/$key/${replaces[$key]}/g"`
-done
-echo $cmd
