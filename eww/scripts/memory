@@ -1,0 +1,8 @@
+#!/bin/sh
+
+utilization=$(free -m | grep Mem | awk '{print $3}'  2> /dev/null)
+max=$(free -m | grep Mem | awk '{print $2}'  2> /dev/null)
+
+
+
+printf '{"utilization":"%s", "max": "%s"}\n' "$utilization" "$max"

@@ -98,6 +98,15 @@ x = 0
 y = 0
 
 [[keyboard.bindings]]
+action = "CreateNewWindow"
+key = "Return"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+command = { program = "nautilus", args = [".",] }
+key = "F12"
+
+[[keyboard.bindings]]
 action = "Paste"
 key = "V"
 mods = "Control|Shift"
@@ -354,9 +363,9 @@ key = "F10"
 chars = "\u001B[23~"
 key = "F11"
 
-[[keyboard.bindings]]
-chars = "\u001B[24~"
-key = "F12"
+#[[keyboard.bindings]]
+#chars = "\u001B[24~"
+#key = "F12"
 
 [[keyboard.bindings]]
 chars = "\u001B[1;2P"

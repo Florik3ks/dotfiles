@@ -1,14 +1,23 @@
-$accent: #AC86E2;
-$secondary: #5D457E;
-$background: #2F2638;
+// $accent: #AC86E2;
+// $secondary: #654B8A;
+// $background: #2F2638;
+// $background2: #1D1D2B;
+// $font: #fff;
+
+$accent: #C49EF4;
+$secondary: #7e60a8;
+// $background: #4B3D57;
+$background: #24273a;
 $background2: #1D1D2B;
 $font: #fff;
+$font-dark: #161320;
 
 * {
     all: unset;
-    font-family: JetBrainsMono NerdFont;
+    font-family: Source Code Pro Medium;
     background-color: transparent;
 }
+
 
 
 .bar_main {
@@ -16,17 +25,37 @@ $font: #fff;
     color: $font;
 }
 
+.bar_other_monitor {
+
+    .left_modules,
+    .right_modules {
+        color: $font;
+        // background-color: #5C447D;
+    }
+}
+
+
 .left_modules,
 .right_modules,
 .center_modules {
     padding: 0 12 0 12;
-    border-radius: 16px;
+    border-radius: 10px;
     background-color: $background;
+}
+
+.center_modules {
+    background-color: $accent;
+    color: $font-dark
 }
 
 .module {
     margin-left: 4px;
     margin-right: 4px;
+
+    .notification {
+        margin-left: 40px;
+        background-color: red;
+    }
 }
 
 .seperator {
@@ -34,15 +63,15 @@ $font: #fff;
     font-size: 18px;
 }
 
-.window{
-    border: 0.5px solid $accent;
-    margin-top: 4px;
+.window {
+    border: 1px solid $accent;
+    margin-top: 8px;
     border-radius: 12;
     background-color: $background2;
 }
 
 // debug purposes
-.meow{
+.meow {
     background-color: red;
 }
 
@@ -51,18 +80,26 @@ $font: #fff;
 
     &.small {
         font-size: 14px;
-        margin-right: 8px;
+        margin-right: 4px;
+        margin-left: 2px;
     }
-    &.marginright{
+
+    &.marginright {
         margin-right: 16px;
     }
-    &.red{
+
+    &.red {
         color: darkred;
     }
+
     margin-right: 2px;
 }
 
 .brightness_bar {}
+
+.clock {
+    background-color: $accent;
+}
 
 .battery {
 
@@ -207,12 +244,13 @@ calendar:indeterminate {
 }
 
 
-.media_widget{
+.media_widget {
     min-width: 400px;
     min-height: 200px;
     padding: 8px;
-    .media_inner{
-        .song_cover_art{
+
+    .media_inner {
+        .song_cover_art {
             background-size: cover;
             background-position: center;
             min-height: 180px;
@@ -220,31 +258,61 @@ calendar:indeterminate {
             margin: 12px;
             border-radius: 12px;
         }
-        .media_controls{
+
+        .media_controls {
             min-width: 200px;
             padding: 20px;
-            .media_title{
+
+            .media_title {
                 color: $accent;
                 text-shadow: 0 0 10px $accent;
                 font-size: 16px;
                 padding: 8px;
                 padding-bottom: 0px;
             }
-            .media_artist{
-                
-            }
 
-            .media_btn{
+            .media_artist {}
+
+            .media_btn {
                 font-size: 22px;
+
                 &:hover {
                     color: $accent;
                 }
             }
-            .media_playpause{
-                label{
+
+            .media_playpause {
+                label {
                     margin: 5px;
                 }
             }
         }
     }
+}
+
+
+.circle_module{
+	border-radius: 16px;
+    margin: 0px 10px 0px 3px;
+    .btn{
+        color: $background;
+        font-size: 0px;
+        margin: 8px;
+    }
+    .circle {
+        background-color: $secondary;
+        border-radius: 10px;
+    }
+}
+
+.memory {
+    color: #f5a97f;
+}
+
+.gpu {
+    color: #ed8796;
+}
+
+.cpu{
+    color: #c6a0f6;
 }

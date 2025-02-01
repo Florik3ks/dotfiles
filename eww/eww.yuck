@@ -10,6 +10,17 @@
            :windowtype "dock"
   (top_bar))
 
+(defwindow bar_other_monitor
+        :monitor 1
+        :exclusive true
+        :geometry (geometry :x "0%"
+                            :y "8px"
+                            :width "100%"
+                            :height "30px"
+                            :anchor "top center")
+        :stacking "fg"
+        :windowtype "dock"
+(top_bar))
 
 (defwidget top_bar []
     (box 
@@ -55,13 +66,25 @@
     )
 )
 
-
+(defvar reveal_detailed_usage false)
 (defwidget right []
 	(box :orientation "h" 
 		 :space-evenly false  
          :halign "end"
 		 :class "right_modules"
         
+        (eventbox
+            :onclick "${EWW_CMD} update reveal_detailed_usage=${reveal_detailed_usage ? "false" : "true"}" :cursor "pointer"
+            (box :orientation "h" 
+            :space-evenly false  
+            :spacing -5
+            :halign "end"
+                (cpu)
+                ;(gpu)
+                (memory)
+            )
+        )
+        (seperator)
         (volume)
         (seperator)
         (brightness)
@@ -116,7 +139,7 @@
             :orientation "h"
             :spacing "3"
             
-            (label :text " ${media_status.title}" :truncate true)
+            (label :text "${media_status.status == "Playing" ? "" : ""} ${media_status.title} - ${media_status.artist}" :truncate true)
         )
     )
 )
@@ -135,8 +158,6 @@
 )
 
 
-(defpoll media_playing :interval "1s"  "playerctl status")
-(defpoll media_current :interval "1s"  "playerctl position")
 
 (defwidget media_details []
 	(box :class "media_widget window" :orientation "v"
@@ -158,7 +179,7 @@
                         :onclick "playerctl play-pause" 
                         :cursor "pointer"
 
-                        (label :text "${media_playing == "Playing" ? "" : ""}")
+                        (label :text "${media_status.status == "Playing" ? "" : ""}")
                     )
                     (eventbox
                         :class "media_btn media_next" 
@@ -170,7 +191,7 @@
                 )
 				(box :class "music_bar" :halign "center" :vexpand "false" :hexpand "false" :space-evenly "false" :spacing "5"
                     (label :text {media_status.positionf} )
-					(scale :onchange "./scripts/media-set-position {}" :min 0 :active "true" :max 101 :value {media_current / (media_status.length / 100000000)})
+					(scale :onchange "./scripts/media-set-position {}" :min 0 :active "true" :max 101 :value {media_status.position * 100 / (media_status.length)})
                     (label :text {media_status.lengthf} )
                 )
             )
@@ -183,9 +204,6 @@
 	(box :class "cal_widget window" :orientation "v"
         (box :class "cal_inner"
             (calendar :class "cal" 
-                :day  "28"
-                :month "12"
-                :year "2024"
                 :show-heading true
                 :show-week-numbers true
             )
@@ -206,11 +224,78 @@
 )
 
 
+
+(defpoll cpu_status :interval "1s" "./scripts/cpu")
+(deflisten cpu_util "vmstat 2 | awk '{print 100-($15); system(\"\")}'")
+(defwidget cpu []
+    (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
+        (circular-progress :value cpu_util :class "cpu circle" :thickness 3 :start-at 75
+            (button 
+                :class "btn"
+                :limit-width 2
+                :tooltip "${cpu_util}% CPU - ${round(cpu_status.temperature / 1000, 0)}°C"
+                :show_truncated false
+                :wrap false
+            )
+        )
+        (revealer 
+            :transition "slideleft"
+            :reveal {reveal_detailed_usage && !reveal_brightness && !reveal_volume}
+            :duration "350ms"
+            (label :text "${cpu_util}% ${round(cpu_status.temperature / 1000, 0)}°C |")
+        )
+    )
+)
+
+(defpoll gpu_status :interval "1s" "./scripts/gpu")
+(defwidget gpu []
+    (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
+        (circular-progress :value {gpu_status.utilization} :class "gpu circle" :thickness 3 :start-at 75
+            (button 
+                :class "btn"
+                :limit-width 2
+                :tooltip "${gpu_status.utilization}% GPU - ${gpu_status.temperature}°C"
+                :show_truncated false
+                :wrap false
+            )
+        )
+        (revealer 
+            :transition "slideleft"
+            :reveal {reveal_detailed_usage && !reveal_brightness && !reveal_volume}
+            :duration "350ms"
+            (label :text "${gpu_status.utilization}% ${gpu_status.temperature}°C |")
+        )
+    )
+)
+
+(defpoll memory_status :interval "1s" "./scripts/memory")
+(defwidget memory []
+    (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
+        (circular-progress :value {memory_status.utilization * 100 / (memory_status.max)} :class "memory circle" :thickness 3 :start-at 75
+            (button 
+                :class "btn"
+                :limit-width 2
+                :tooltip "${memory_status.utilization}MiB / ${memory_status.max}MiB"
+                :show_truncated false
+                :wrap false
+            )
+        )
+        (revealer 
+            :transition "slideleft"
+            :reveal {reveal_detailed_usage && !reveal_brightness && !reveal_volume}
+            :duration "350ms"
+            (label :text "${round(memory_status.utilization * 100 / (memory_status.max), 0)}% ${memory_status.utilization}MiB / ${memory_status.max}MiB")
+        )
+    )
+)
+
+
+
 (defvar reveal_volume false)
-(defpoll volume_status :interval "1s" "./scripts/volume")
+(deflisten volume_status "./scripts/volume")
 
 (defwidget volume []
-    (eventbox :onhover "eww update reveal_volume=true" :onhoverlost "eww update reveal_volume=false" :tooltip {volume_status.name}
+    (eventbox :onhover "${EWW_CMD} update reveal_volume=true" :onhoverlost "${EWW_CMD} update reveal_volume=false" :tooltip {volume_status.name} :onscroll "./scripts/onvolumescroll {}"
         (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
             (label :text {volume_status.icon} :class "icon ${volume_status.muted ? "red" : ""} small")
             (revealer 
@@ -227,7 +312,7 @@
                         :onchange "wpctl set-volume @DEFAULT_SINK@ {}%" )
                 )
             )
-            (label :text "${volume_status.percentage > 0 ? "${volume_status.percentage}%" : ""}")
+            (label :text "${volume_status.percentage > 0 ? '${volume_status.percentage}%' : ""}")
         )
     )
 )
@@ -237,7 +322,7 @@
 (defpoll brightness_percent :interval "100ms" "brightnessctl -m | cut -d',' -f4 | tr -d '%'")
 
 (defwidget brightness []
-    (eventbox :onhover "eww update reveal_brightness=true" :onhoverlost "eww update reveal_brightness=false"
+    (eventbox :onhover "${EWW_CMD} update reveal_brightness=true" :onhoverlost "${EWW_CMD} update reveal_brightness=false"
         (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
             (label :text "󰃠" :class "icon")
             (revealer 
@@ -284,7 +369,7 @@
 (defwidget notifications []
     (eventbox 
         :tooltip "${notification_listener.tooltip}"
-        :class "module"   
+        :class "module notification"   
         :cursor "pointer"
         :onclick "swaync-client -t -sw"
         :onrightclick "swaync-client -d -sw"

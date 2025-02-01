@@ -1,30 +1,42 @@
 #!/bin/sh
 
-percentage=`wpctl get-volume @DEFAULT_AUDIO_SINK@ /dev/null | cut -d' ' -f 2 | sed "s/0.//"`
-if [ "$percentage" = "1." ]; then
-    percentage="100"
-fi
 
-percentage="$(($percentage + 0))"
+main(){
+    percentage=`wpctl get-volume @DEFAULT_AUDIO_SINK@ /dev/null | cut -d' ' -f 2 | sed "s/0.//"`
+    if [ "$percentage" = "1." ]; then
+        percentage="100"
+    fi
 
-muted=false
+    percentage="$(($percentage + 0))"
 
-if [[ `wpctl get-volume @DEFAULT_AUDIO_SINK@ /dev/null` == *"MUTED"* ]]; then
-    muted=true
-fi
+    muted=false
 
-if $muted; then
-    icon=""
-elif [ "$percentage" -gt "75" ]; then
-    icon=""
-elif [ "$percentage" -gt "25" ]; then
-    icon=""
-elif [ "$percentage" -gt "0" ]; then
-    icon=""
-else
-    icon=""
-fi
+    if [[ `wpctl get-volume @DEFAULT_AUDIO_SINK@ /dev/null` == *"MUTED"* ]]; then
+        muted=true
+    fi
 
-name=`wpctl inspect @DEFAULT_SINK@ | grep media.name | cut -d'"' -f 2`
+    if $muted; then
+        icon=""
+    elif [ "$percentage" -gt "75" ]; then
+        icon=""
+    elif [ "$percentage" -gt "25" ]; then
+        icon=""
+    elif [ "$percentage" -gt "0" ]; then
+        icon=""
+    else
+        icon=""
+    fi
 
-printf '{"icon":"%s","percentage":"%s","name":"%s","muted":"%s"}\n' "$icon" "$percentage" "$name" "$muted"
+    name=`wpctl inspect @DEFAULT_SINK@ | grep media.name | cut -d'"' -f 2`
+
+    printf '{"icon":"%s","percentage":"%s","name":"%s","muted":"%s"}\n' "$icon" "$percentage" "$name" "$muted"
+}
+
+main
+
+# Continuously listen to PulseAudio events
+pactl subscribe | while read -r line; do
+    if [[ "$line" =~ "sink" ]]; then
+        main
+    fi
+done
