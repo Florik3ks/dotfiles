@@ -35,6 +35,3 @@ media() {
 }
 
 media
-playerctl metadata -F --format '{"title": "{{markup_escape(title)}}", "artist": "{{artist}}", "class": "{{playerName}}", "icon": "{{mpris:artUrl}}", "length": "{{mpris:length}}", "lengthf": "{{duration(mpris:length)}}", "positionf": "{{duration(position)}}", "position": "{{position}}", "status": "{{status}}"  }' | while read -r line; do
-  media
-done
