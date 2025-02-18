@@ -10,6 +10,8 @@
 
 !hypr/
 !hypr/*
+!hypr/scripts/
+!hypr/scripts/*
 
 !fuzzel/
 !fuzzel/*
