@@ -106,6 +106,9 @@ mods = "Control|Shift"
 command = { program = "nautilus", args = [".",] }
 key = "F12"
 
+[[keyboard.bindings]]
+command = { program = "codium", args = [".",] }
+key = "F11"
 
 [[keyboard.bindings]]
 action = "Paste"
@@ -360,9 +363,6 @@ key = "F9"
 chars = "\u001B[21~"
 key = "F10"
 
-[[keyboard.bindings]]
-chars = "\u001B[23~"
-key = "F11"
 
 # [[keyboard.bindings]]
 # chars = "\u001B[24~"
