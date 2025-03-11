@@ -25,6 +25,7 @@ media() {
   replaces["&lt;"]="<"
   replaces["&gt;"]=">"
   replaces["&amp;"]="\&"
+  replaces["\*"]="​*" # '*' beccomes '{zero width space}*' so it does not expand into everything like * usually does
 
 
   for key in "${!replaces[@]}"
