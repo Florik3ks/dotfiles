@@ -2,25 +2,12 @@
            :monitor 0
            :exclusive true
            :geometry (geometry :x "0%"
-                               :y "8px"
+                               :y "5px"
                                :width "100%"
                                :height "30px"
                                :anchor "top center")
            :stacking "fg"
-           :windowtype "dock"
   (top_bar))
-
-(defwindow bar_other_monitor
-        :monitor 1
-        :exclusive true
-        :geometry (geometry :x "0%"
-                            :y "8px"
-                            :width "100%"
-                            :height "30px"
-                            :anchor "top center")
-        :stacking "fg"
-        :windowtype "dock"
-(top_bar))
 
 (defwidget top_bar []
     (box 
@@ -33,10 +20,8 @@
     )
 )
 
-
-
 (defwidget left []
-	(box 
+    (box 
         :orientation "h" 
         :space-evenly false  
         :halign "start"
@@ -68,10 +53,10 @@
 
 (defvar reveal_detailed_usage false)
 (defwidget right []
-	(box :orientation "h" 
-		 :space-evenly false  
+    (box :orientation "h" 
+         :space-evenly false  
          :halign "end"
-		 :class "right_modules"
+         :class "right_modules"
         
         (eventbox
             :onclick "${EWW_CMD} update reveal_detailed_usage=${reveal_detailed_usage ? "false" : "true"}" :cursor "pointer"
@@ -97,11 +82,11 @@
 
 
 (defwidget center []
-	(box
+    (box
         :orientation "h" 
-		:space-evenly false  
+        :space-evenly false  
         :halign "center"
-		:class "center_modules"
+        :class "center_modules"
         
         (clock)
     )
@@ -144,26 +129,27 @@
 
 (defwindow mediawindow
     :monitor 0
-	:geometry   (geometry
-                    :x "8px" 
-                    :y "0%" 
-                    :anchor "top left"
-                    :width "270px" 
-                    :height "60px"
-                )
+    :stacking "overlay"
+    :geometry (geometry
+        :x "5px" 
+        :y "0%" 
+        :anchor "top left"
+        :width "270px" 
+        :height "60px"
+    )
     (media_details)
 )
 
 
 
 (defwidget media_details []
-	(box :class "media_widget window" :orientation "v"
+    (box :class "media_widget window" :orientation "v"
         (box :class "media_inner" :space-evenly "false" :spacing "25"
             (box :class "song_cover_art" :style "background-image: url('${media_status.icon}');")
             (box :orientation "v" :spacing 20 :space-evenly "false" :class "media_controls"
                 (label :justify "center" :class "media_title" :wrap "true" :text {media_status.title})
                 (label :justify "center" :class "music_artist" :wrap "true" :text {media_status.artist})
-				(box :orientation "h" :spacing 25 :halign "center" :space-evenly "false"
+                (box :orientation "h" :spacing 25 :halign "center" :space-evenly "false"
                     (eventbox
                         :class "media_btn media_prev" 
                         :onclick "playerctl previous" 
@@ -171,7 +157,7 @@
                         
                         (label :text "")
                     )
-					(eventbox
+                    (eventbox
                         :class "media_btn media_playpause" 
                         :onclick "playerctl play-pause" 
                         :cursor "pointer"
@@ -186,9 +172,9 @@
                         (label :text "")
                     )
                 )
-				(box :class "music_bar" :halign "center" :vexpand "false" :hexpand "false" :space-evenly "false" :spacing "5"
+                (box :class "music_bar" :halign "center" :vexpand "false" :hexpand "false" :space-evenly "false" :spacing "5"
                     (label :text {media_status.positionf} )
-					(scale :onchange "./scripts/media-set-position {}" :min 0 :active "true" :max 101 :value {media_status.position * 100 / (media_status.length)})
+                    (scale :onchange "./scripts/media-set-position {}" :min 0 :active "true" :max 101 :value {media_status.position * 100 / (media_status.length)})
                     (label :text {media_status.lengthf} )
                 )
             )
@@ -210,7 +196,8 @@
 
 (defwindow calendar
     :monitor 0
-    :geometry   (geometry
+    :stacking "overlay"
+    :geometry (geometry
                     :x "0px" 
                     :y "0%" 
                     :anchor "top center"

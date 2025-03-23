@@ -11,6 +11,10 @@ $background: #24273a;
 $background2: #1D1D2B;
 $font: #fff;
 $font-dark: #161320;
+$border-col: $accent;
+$border-radius-bar-modules: 8px;
+$border-radius-window: 12px;
+$outer-margin: 5px;
 
 * {
     all: unset;
@@ -18,19 +22,15 @@ $font-dark: #161320;
     background-color: transparent;
 }
 
-
-
 .bar_main {
-    margin: 0 8 0 8;
+    margin: 0 $outer-margin 0 $outer-margin;
     color: $font;
 }
 
 .bar_other_monitor {
-
     .left_modules,
     .right_modules {
         color: $font;
-        // background-color: #5C447D;
     }
 }
 
@@ -39,7 +39,7 @@ $font-dark: #161320;
 .right_modules,
 .center_modules {
     padding: 0 12 0 12;
-    border-radius: 10px;
+    border-radius: $border-radius-bar-modules;
     background-color: $background;
 }
 
@@ -64,9 +64,9 @@ $font-dark: #161320;
 }
 
 .window {
-    border: 1px solid $accent;
-    margin-top: 8px;
-    border-radius: 12;
+    border: 2px solid $border-col;
+    margin-top: $outer-margin;
+    border-radius: $border-radius-window;
     background-color: $background2;
 }
 
@@ -113,29 +113,6 @@ $font-dark: #161320;
     margin-left: 2px;
 }
 
-.popup {
-    background-color: $background2;
-    border-radius: 12px;
-
-    :hover {
-        color: $accent;
-        text-shadow: 0 0 5px $accent, 0 0 10px $accent;
-    }
-
-    * {
-        padding: 0 4 0 4;
-    }
-
-    :last-child {
-        padding-bottom: 4px;
-    }
-
-    :first-child {
-        padding-top: 4px;
-        padding-bottom: 4px;
-    }
-}
-
 scale trough {
     all: unset;
     background-color: $secondary;
@@ -147,13 +124,11 @@ scale trough {
     margin-right: 8px;
 
     slider {
-        border-color: $accent;
         min-height: 4px;
         min-width: 4px;
     }
 
     highlight {
-        border-color: $accent;
         background-color: $accent;
         border-radius: 10px;
     }
@@ -164,7 +139,7 @@ scale trough {
 tooltip.background {
     background-color: #000;
     font-size: 18;
-    border-radius: 10px;
+    border-radius: $border-radius-bar-modules;
     color: #bfc9db;
 }
 
@@ -181,7 +156,6 @@ tooltip label {
 
     font-size: 18px;
     font-weight: normal;
-    border: 0.5px solid $accent;
     padding: 0 12 0 12px;
 
     .cal_inner {
@@ -256,7 +230,7 @@ calendar:indeterminate {
             min-height: 180px;
             min-width: 180px;
             margin: 12px;
-            border-radius: 12px;
+            border-radius: $border-radius-window;
         }
 
         .media_controls {
