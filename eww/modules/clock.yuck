@@ -1,0 +1,15 @@
+(include "./modules/calendar.yuck")
+
+(defwidget clock []
+  (eventbox :onclick "${EWW_CMD} open --toggle calendar;${EWW_CMD} open --toggle calendar-closer" :cursor "pointer"
+    (box
+      :class "module"
+      :space-evenly "false"
+      :orientation "h"
+      :spacing "3"
+      :tooltip {formattime(EWW_TIME, "%H:%M:%S")}
+      
+      (label :text {formattime(EWW_TIME, "%d %b %H:%M")})
+    )
+  )
+)

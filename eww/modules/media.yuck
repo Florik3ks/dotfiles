@@ -1,0 +1,75 @@
+(defpoll media_status :interval "1s" "./scripts/media")
+
+(defwidget media []
+  (eventbox :onclick "${EWW_CMD} open --toggle mediawindow;${EWW_CMD} open --toggle mediawindow-closer" :cursor "pointer"
+    (box
+      :class "module"
+      :space-evenly "false"
+      :orientation "h"
+      :spacing "3"
+      
+      (label :text "${media_status.status == "Playing" ? "" : ""} ${media_status.title} - ${media_status.artist}" :truncate true)
+    )
+  )
+)
+
+(defwindow mediawindow-closer
+  :monitor 0
+  :geometry (geometry :width "100%" :height "100%")
+  :stacking "fg"
+  :focusable false
+  (closer :window "mediawindow")
+)
+
+(defwindow mediawindow
+  :monitor 0
+  :stacking "overlay"
+  :geometry (geometry
+    :x "5px"
+    :y "0%"
+    :anchor "top left"
+    :width "270px"
+    :height "60px"
+  )
+  (media_details)
+)
+
+(defwidget media_details []
+  (box :class "media_widget window" :orientation "v"
+    (box :class "media_inner" :space-evenly "false" :spacing "25"
+      (box :class "song_cover_art" :style "background-image: url('${media_status.icon}');")
+      (box :orientation "v" :spacing 20 :space-evenly "false" :class "media_controls"
+        (label :justify "center" :class "media_title" :wrap "true" :text {media_status.title})
+        (label :justify "center" :class "music_artist" :wrap "true" :text {media_status.artist})
+        (box :orientation "h" :spacing 25 :halign "center" :space-evenly "false"
+          (eventbox
+            :class "media_btn media_prev"
+            :onclick "playerctl previous"
+            :cursor "pointer"
+            
+            (label :text "")
+          )
+          (eventbox
+            :class "media_btn media_playpause"
+            :onclick "playerctl play-pause"
+            :cursor "pointer"
+            
+            (label :text "${media_status.status == "Playing" ? "" : ""}")
+          )
+          (eventbox
+            :class "media_btn media_next"
+            :onclick "playerctl next"
+            :cursor "pointer"
+            
+            (label :text "")
+          )
+        )
+        (box :class "music_bar" :halign "center" :vexpand "false" :hexpand "false" :space-evenly "false" :spacing "5"
+          (label :text {media_status.positionf} )
+          (scale :onchange "${EWW_CONFIG_DIR}/scripts/media-set-position {}" :min 0 :active "true" :max 101 :value {media_status.position * 100 / (media_status.length)})
+          (label :text {media_status.lengthf} )
+        )
+      )
+    )
+  )
+)

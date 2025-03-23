@@ -1,385 +1,116 @@
+(include "./modules/clock.yuck")
+(include "./modules/media.yuck")
+(include "./modules/workspaces.yuck")
+; (include "./modules/status/battery.yuck")
+; (include "./modules/status/brightness.yuck")
+(include "./modules/status/cpu.yuck")
+(include "./modules/status/gpu.yuck")
+(include "./modules/status/memory.yuck")
+; (include "./modules/status/network.yuck")
+(include "./modules/status/volume.yuck")
+(include "./modules/status/notifications.yuck")
+
 (defwindow bar
-           :monitor 0
-           :exclusive true
-           :geometry (geometry :x "0%"
-                               :y "5px"
-                               :width "100%"
-                               :height "30px"
-                               :anchor "top center")
-           :stacking "fg"
-  (top_bar))
+  :monitor 0
+  :exclusive true
+  :geometry (geometry :x "0%"
+    :y "5px"
+    :width "100%"
+    :height "30px"
+  :anchor "top center")
+  :stacking "fg"
+  (top_bar)
+)
 
 (defwidget top_bar []
-    (box 
-        :class "bar_main"
-        :orientation "h"
+  (box
+    :class "bar_main"
+    :orientation "h"
     
-        (left)
-        (center)
-        (right)
-    )
+    (left)
+    (center)
+    (right)
+  )
 )
 
 (defwidget left []
-    (box 
-        :orientation "h" 
-        :space-evenly false  
-        :halign "start"
-        :class ""
-        :spacing 8
-        
-        (box 
-            :orientation "h" 
-            :space-evenly false  
-            :halign "start"
-            :class "left_modules"
-            :spacing 8
-            
-            ;(battery)
-            (workspaces)
-        )
-        (box 
-            :visible {media_status == "" ? "false" : "true"}
-            :orientation "h" 
-            :space-evenly false  
-            :halign "start"
-            :class "left_modules"
-            :spacing 8
-            
-            (media)
-        )
+  (box
+    :orientation "h"
+    :space-evenly false
+    :halign "start"
+    :class ""
+    :spacing 8
+    
+    (box
+      :orientation "h"
+      :space-evenly false
+      :halign "start"
+      :class "left_modules"
+      :spacing 8
+      
+      ;(battery)
+      (workspaces)
     )
+    (box
+      :visible {media_status == "" ? "false" : "true"}
+      :orientation "h"
+      :space-evenly false
+      :halign "start"
+      :class "left_modules"
+      :spacing 8
+      
+      (media)
+    )
+  )
 )
 
 (defvar reveal_detailed_usage false)
 (defwidget right []
-    (box :orientation "h" 
-         :space-evenly false  
-         :halign "end"
-         :class "right_modules"
-        
-        (eventbox
-            :onclick "${EWW_CMD} update reveal_detailed_usage=${reveal_detailed_usage ? "false" : "true"}" :cursor "pointer"
-            (box :orientation "h" 
-            :space-evenly false  
-            :spacing -5
-            :halign "end"
-                (cpu)
-                (gpu)
-                (memory)
-            )
-        )
-        (seperator)
-        (volume)
-        (seperator)
-        ;(brightness)
-        ;(seperator)
-        ;(network)
-        (notifications)
-        (seperator)
-        (systray :class "tray" :spacing "8" :icon-size "20")
-))
+  (box :orientation "h"
+    :space-evenly false
+    :halign "end"
+    :class "right_modules"
+    
+    (eventbox
+      :onclick "${EWW_CMD} update reveal_detailed_usage=${reveal_detailed_usage ? "false" : "true"}" :cursor "pointer"
+      (box :orientation "h"
+        :space-evenly false
+        :spacing -5
+        :halign "end"
+        (cpu)
+        (gpu)
+        (memory)
+      )
+    )
+    (seperator)
+    (volume)
+    (seperator)
+    ;(brightness)
+    ;(seperator)
+    ;(network)
+    (notifications)
+    (seperator)
+    (systray :class "tray" :spacing "8" :icon-size "20")
+  )
+)
 
 
 (defwidget center []
-    (box
-        :orientation "h" 
-        :space-evenly false  
-        :halign "center"
-        :class "center_modules"
-        
-        (clock)
-    )
+  (box
+    :orientation "h"
+    :space-evenly false
+    :halign "center"
+    :class "center_modules"
+    
+    (clock)
+  )
 )
 
 (defwidget seperator []
-    (label :text "|" :class "seperator")
+  (label :text "|" :class "seperator")
 )
 
-
-(defwidget clock []
-    (eventbox :onclick "eww open --toggle calendar" :cursor "pointer"
-        (box 
-            :class "module"
-            :space-evenly "false"
-            :orientation "h"
-            :spacing "3"
-            :tooltip {formattime(EWW_TIME, "%H:%M:%S")}
-            
-            (label :text {formattime(EWW_TIME, "%d %b %H:%M")})
-        )
-    )
+; https://github.com/elkowar/eww/issues/472#issuecomment-1146860335
+(defwidget closer [window]
+  (eventbox :onclick "eww close ${window} && eww close ${window}-closer")
 )
-
-(defpoll media_status :interval "1s" "./scripts/media")
-
-(defwidget media []
-    (eventbox :onclick "eww open --toggle mediawindow" :cursor "pointer"
-        (box 
-            :class "module"
-            :space-evenly "false"
-            :orientation "h"
-            :spacing "3"
-            
-            (label :text "${media_status.status == "Playing" ? "" : ""} ${media_status.title} - ${media_status.artist}" :truncate true)
-        )
-    )
-)
-
-
-(defwindow mediawindow
-    :monitor 0
-    :stacking "overlay"
-    :geometry (geometry
-        :x "5px" 
-        :y "0%" 
-        :anchor "top left"
-        :width "270px" 
-        :height "60px"
-    )
-    (media_details)
-)
-
-
-
-(defwidget media_details []
-    (box :class "media_widget window" :orientation "v"
-        (box :class "media_inner" :space-evenly "false" :spacing "25"
-            (box :class "song_cover_art" :style "background-image: url('${media_status.icon}');")
-            (box :orientation "v" :spacing 20 :space-evenly "false" :class "media_controls"
-                (label :justify "center" :class "media_title" :wrap "true" :text {media_status.title})
-                (label :justify "center" :class "music_artist" :wrap "true" :text {media_status.artist})
-                (box :orientation "h" :spacing 25 :halign "center" :space-evenly "false"
-                    (eventbox
-                        :class "media_btn media_prev" 
-                        :onclick "playerctl previous" 
-                        :cursor "pointer"
-                        
-                        (label :text "")
-                    )
-                    (eventbox
-                        :class "media_btn media_playpause" 
-                        :onclick "playerctl play-pause" 
-                        :cursor "pointer"
-
-                        (label :text "${media_status.status == "Playing" ? "" : ""}")
-                    )
-                    (eventbox
-                        :class "media_btn media_next" 
-                        :onclick "playerctl next" 
-                        :cursor "pointer"
-                        
-                        (label :text "")
-                    )
-                )
-                (box :class "music_bar" :halign "center" :vexpand "false" :hexpand "false" :space-evenly "false" :spacing "5"
-                    (label :text {media_status.positionf} )
-                    (scale :onchange "./scripts/media-set-position {}" :min 0 :active "true" :max 101 :value {media_status.position * 100 / (media_status.length)})
-                    (label :text {media_status.lengthf} )
-                )
-            )
-        )
-    )
-)
-
-
-(defwidget cal []
-    (box :class "cal_widget window" :orientation "v"
-        (box :class "cal_inner"
-            (calendar :class "cal" 
-                :show-heading true
-                :show-week-numbers true
-            )
-        )
-    )
-)
-
-(defwindow calendar
-    :monitor 0
-    :stacking "overlay"
-    :geometry (geometry
-                    :x "0px" 
-                    :y "0%" 
-                    :anchor "top center"
-                    :width "270px" 
-                    :height "60px"
-                )
-    (cal)
-)
-
-
-
-(defpoll cpu_status :interval "1s" "./scripts/cpu")
-(deflisten cpu_util "vmstat 2 | awk '{print 100-($15); system(\"\")}'")
-(defwidget cpu []
-    (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
-        (circular-progress :value cpu_util :class "cpu circle" :thickness 3 :start-at 75
-            (button 
-                :class "btn"
-                :limit-width 2
-                :tooltip "${cpu_util}% CPU - ${round(cpu_status.temperature / 1000, 0)}°C"
-                :show_truncated false
-                :wrap false
-            )
-        )
-        (revealer 
-            :transition "slideleft"
-            :reveal reveal_detailed_usage
-            :duration "350ms"
-            (label :text "${cpu_util}% ${round(cpu_status.temperature / 1000, 0)}°C |")
-        )
-    )
-)
-
-(defpoll gpu_status :interval "1s" "./scripts/gpu")
-(defwidget gpu []
-    (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
-        (circular-progress :value {gpu_status.utilization} :class "gpu circle" :thickness 3 :start-at 75
-            (button 
-                :class "btn"
-                :limit-width 2
-                :tooltip "${gpu_status.utilization}% GPU - ${gpu_status.temperature}°C"
-                :show_truncated false
-                :wrap false
-            )
-        )
-        (revealer 
-            :transition "slideleft"
-            :reveal reveal_detailed_usage
-            :duration "350ms"
-            (label :text "${gpu_status.utilization}% ${gpu_status.temperature}°C |")
-        )
-    )
-)
-
-(defpoll memory_status :interval "1s" "./scripts/memory")
-(defwidget memory []
-    (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5" 
-        (circular-progress :value {memory_status.utilization * 100 / (memory_status.max)} :class "memory circle" :thickness 3 :start-at 75
-            (button 
-                :class "btn"
-                :limit-width 2
-                :tooltip "${memory_status.utilization}MiB / ${memory_status.max}MiB"
-                :show_truncated false
-                :wrap false
-            )
-        )
-        (revealer 
-            :transition "slideleft"
-            :reveal reveal_detailed_usage
-            :duration "350ms"
-            (label :text "${round(memory_status.utilization * 100 / (memory_status.max), 0)}% ${memory_status.utilization}MiB / ${memory_status.max}MiB")
-        )
-    )
-)
-
-
-
-(defvar reveal_volume false)
-(deflisten volume_status "./scripts/volume")
-
-(defwidget volume []
-    (eventbox :onhover "${EWW_CMD} update reveal_volume=true" :onhoverlost "${EWW_CMD} update reveal_volume=false" :tooltip {volume_status.name} :onscroll "./scripts/onvolumescroll {}"
-        (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
-            (label :text {volume_status.icon} :class "icon ${volume_status.muted ? "red" : ""} small")
-            (revealer 
-                :transition "slideleft"
-                :reveal reveal_volume
-                :duration "350ms"
-                (box :space-evenly "false" :spacing "5" 
-                    (scale    
-                        :class "volume_bar"
-                        :value {volume_status.percentage}
-                        :orientation "h"
-                        :max 101
-                        :min 0
-                        :onchange "wpctl set-volume @DEFAULT_SINK@ {}%" )
-                )
-            )
-            (label :text "${volume_status.percentage > 0 ? '${volume_status.percentage}%' : ""}")
-        )
-    )
-)
-
-
-(defvar reveal_brightness false)
-(defpoll brightness_percent :interval "100ms" "brightnessctl -m | cut -d',' -f4 | tr -d '%'")
-
-(defwidget brightness []
-    (eventbox :onhover "${EWW_CMD} update reveal_brightness=true" :onhoverlost "${EWW_CMD} update reveal_brightness=false"
-        (box :class "module" :space-evenly "false" :orientation "h" :spacing "5" 
-            (label :text "󰃠" :class "icon")
-            (revealer 
-                :transition "slideleft"
-                :reveal reveal_brightness
-                :duration "350ms"
-                (box :space-evenly "false" :spacing "5" 
-                    (scale    
-                        :class "brightness_bar"
-                        :value brightness_percent
-                        :orientation "h"
-                        :max 101
-                        :min 0
-                        :onchange "brightnessctl set {}%" )
-                    (label :text "${brightness_percent}%")
-                )
-            )
-        )
-    )
-)
-
-
-
-(defpoll ssid_name :interval "1s" "iwgetid -r")
-(defwidget network []
-    (box :class "module network" :space-evenly "false" :orientation "h" :spacing "5" :tooltip ssid_name
-        (label :text "${strlength(ssid_name) > 0 ? "" : "󰖪"}" :class "icon ${strlength(ssid_name) > 0 ? "small" : "red"} marginright")
-    )
-)
-
-
-(defpoll battery_status :interval "5s" "./scripts/battery")
-
-(defwidget battery []
-    (box :class "module battery" :space-evenly "false" :orientation "h" :spacing "5" :tooltip {battery_status.remaining}
-        (label :text {battery_status.icon} :class "icon ${battery_status.status}")
-        (label :text "${battery_status.percentage}%")
-    )
-)
-
-
-(deflisten notification_listener "swaync-client -swb")
-
-(defwidget notifications []
-    (eventbox 
-        :tooltip "${notification_listener.tooltip}"
-        :class "module notification"   
-        :cursor "pointer"
-        :onclick "swaync-client -t -sw"
-        :onrightclick "swaync-client -d -sw"
-        (box
-            (label :text "${arraylength(search(notification_listener.class, "dnd")) > 0 ? "" : ""}" :class "icon small")
-            (label :text {notification_listener.text})
-        )
-    )
-)
-
-
-; https://wiki.hyprland.org/Useful-Utilities/Status-Bars/#configewwyuck but modified
-
-(deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces")
-(deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace")
-(defwidget workspaces []
-  (eventbox :onscroll "bash ~/.config/eww/scripts/change-active-workspace {} ${current_workspace}" :class "workspaces-widget"
-    (box :space-evenly true
-      (label :text "${workspaces}${current_workspace}" :visible false)
-      (for workspace in workspaces
-        (eventbox :onclick "hyprctl dispatch workspace ${workspace.id}"
-          (box :class "workspace-entry ${workspace.windows > 0 ? "occupied" : "empty"}"
-            (label :text "${workspace.windows > 0 ? " " : " "}" :class "workspace-entry ${workspace.id == current_workspace ? "current" : ""}" )
-            )
-          )
-        )
-      )
-    )
-  )

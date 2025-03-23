@@ -99,10 +99,11 @@ slider {
 .control-center {
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8), inset 0 0 0 1px #313244;
   border-radius: 12.6px;
-  margin: 18px;
+  margin: 15px;
   background-color: #1e1e2e;
   color: #cdd6f4;
   padding: 14px;
+  border: 2px solid #C49EF4;
 }
 
 .control-center .widget-title > label {

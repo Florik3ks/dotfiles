@@ -1,0 +1,22 @@
+(defpoll cpu_status :interval "1s" "./scripts/cpu")
+(deflisten cpu_util "vmstat 2 | awk '{print 100-($15); system(\"\")}'")
+
+(defwidget cpu []
+  (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5"
+    (circular-progress :value cpu_util :class "cpu circle" :thickness 3 :start-at 75
+      (button
+        :class "btn"
+        :limit-width 2
+        :tooltip "${cpu_util}% CPU - ${round(cpu_status.temperature / 1000, 0)}°C"
+        :show_truncated false
+        :wrap false
+      )
+    )
+    (revealer
+      :transition "slideleft"
+      :reveal reveal_detailed_usage
+      :duration "350ms"
+      (label :text "${cpu_util}% ${round(cpu_status.temperature / 1000, 0)}°C |")
+    )
+  )
+)

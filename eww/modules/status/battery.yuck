@@ -1,0 +1,8 @@
+(defpoll battery_status :interval "20s" "${EWW_CONFIG_DIR}/scripts/battery")
+
+(defwidget battery []
+  (box :class "module battery" :space-evenly "false" :orientation "h" :spacing "5" :tooltip {battery_status.remaining}
+    (label :text {battery_status.icon} :class "icon ${battery_status.status}")
+    (label :text "${battery_status.percentage}%")
+  )
+)

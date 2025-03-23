@@ -1,0 +1,25 @@
+(defvar reveal_brightness false)
+(defpoll brightness_percent :interval "100ms" "brightnessctl -m | cut -d',' -f4 | tr -d '%'")
+
+(defwidget brightness []
+  (eventbox :onhover "${EWW_CMD} update reveal_brightness=true" :onhoverlost "${EWW_CMD} update reveal_brightness=false"
+    (box :class "module" :space-evenly "false" :orientation "h" :spacing "5"
+      (label :text "󰃠" :class "icon")
+      (revealer
+        :transition "slideleft"
+        :reveal reveal_brightness
+        :duration "350ms"
+        (box :space-evenly "false" :spacing "5"
+          (scale
+            :class "brightness_bar"
+            :value brightness_percent
+            :orientation "h"
+            :max 101
+            :min 0
+          :onchange "brightnessctl set {}%" )
+          (label :text "${brightness_percent}%")
+        )
+      )
+    )
+  )
+)

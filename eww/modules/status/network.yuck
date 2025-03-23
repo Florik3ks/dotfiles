@@ -1,0 +1,7 @@
+(defpoll ssid_name :interval "1s" "iwgetid -r")
+
+(defwidget network []
+  (box :class "module network" :space-evenly "false" :orientation "h" :spacing "5" :tooltip ssid_name
+    (label :text "${strlength(ssid_name) > 0 ? "" : "󰖪"}" :class "icon ${strlength(ssid_name) > 0 ? "small" : "red"} marginright")
+  )
+)

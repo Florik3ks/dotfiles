@@ -14,7 +14,8 @@ $font-dark: #161320;
 $border-col: $accent;
 $border-radius-bar-modules: 8px;
 $border-radius-window: 12px;
-$outer-margin: 5px;
+$outer-margin-base: 5px;
+$outer-margin: 15px;
 
 * {
     all: unset;
@@ -23,7 +24,7 @@ $outer-margin: 5px;
 }
 
 .bar_main {
-    margin: 0 $outer-margin 0 $outer-margin;
+    margin: 0 $outer-margin-base 0 $outer-margin-base;
     color: $font;
 }
 
@@ -219,6 +220,7 @@ calendar:indeterminate {
 
 
 .media_widget {
+    margin-left: calc($outer-margin - $outer-margin-base);
     min-width: 400px;
     min-height: 200px;
     padding: 8px;

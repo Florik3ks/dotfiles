@@ -1,0 +1,20 @@
+(defpoll gpu_status :interval "1s" "./scripts/gpu")
+(defwidget gpu []
+  (box :class "module circle_module" :space-evenly "false" :orientation "h" :spacing "5"
+    (circular-progress :value {gpu_status.utilization} :class "gpu circle" :thickness 3 :start-at 75
+      (button
+        :class "btn"
+        :limit-width 2
+        :tooltip "${gpu_status.utilization}% GPU - ${gpu_status.temperature}°C"
+        :show_truncated false
+        :wrap false
+      )
+    )
+    (revealer
+      :transition "slideleft"
+      :reveal reveal_detailed_usage
+      :duration "350ms"
+      (label :text "${gpu_status.utilization}% ${gpu_status.temperature}°C |")
+    )
+  )
+)

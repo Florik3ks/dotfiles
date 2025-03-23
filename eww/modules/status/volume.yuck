@@ -1,0 +1,25 @@
+(defvar reveal_volume false)
+(deflisten volume_status "./scripts/volume")
+
+(defwidget volume []
+  (eventbox :onhover "${EWW_CMD} update reveal_volume=true" :onhoverlost "${EWW_CMD} update reveal_volume=false" :tooltip {volume_status.name} :onscroll "${EWW_CONFIG_DIR}/scripts/onvolumescroll {}"
+    (box :class "module" :space-evenly "false" :orientation "h" :spacing "5"
+      (label :text {volume_status.icon} :class "icon ${volume_status.muted ? "red" : ""} small")
+      (revealer
+        :transition "slideleft"
+        :reveal reveal_volume
+        :duration "350ms"
+        (box :space-evenly "false" :spacing "5"
+          (scale
+            :class "volume_bar"
+            :value {volume_status.percentage}
+            :orientation "h"
+            :max 101
+            :min 0
+          :onchange "wpctl set-volume @DEFAULT_SINK@ {}%" )
+        )
+      )
+      (label :text "${volume_status.percentage > 0 ? '${volume_status.percentage}%' : ""}")
+    )
+  )
+)

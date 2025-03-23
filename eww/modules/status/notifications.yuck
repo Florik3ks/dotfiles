@@ -1,0 +1,15 @@
+(deflisten notification_listener "swaync-client -swb")
+
+(defwidget notifications []
+  (eventbox
+    :tooltip "${notification_listener.tooltip}"
+    :class "module notification"
+    :cursor "pointer"
+    :onclick "swaync-client -t -sw"
+    :onrightclick "swaync-client -d -sw"
+    (box
+      (label :text "${arraylength(search(notification_listener.class, "dnd")) > 0 ? "" : ""}" :class "icon small")
+      (label :text {notification_listener.text})
+    )
+  )
+)

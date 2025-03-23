@@ -14,9 +14,12 @@
 
 !eww/
 !eww/*
-
 !eww/scripts/
 !eww/scripts/*
+!eww/modules/
+!eww/modules/*
+!eww/modules/status/
+!eww/modules/status/*
 
 !swaync/
 !swaync/*
