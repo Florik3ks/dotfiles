@@ -103,7 +103,6 @@ $outer-margin: 15px;
 }
 
 .battery {
-
     // color: red;
     .Full {
         color: darkolivegreen;
@@ -112,6 +111,24 @@ $outer-margin: 15px;
 
 .tray {
     margin-left: 2px;
+}
+
+.popup {
+    menu{
+        background-color: $background2;
+        border-radius: $border-radius-window;
+        border: 2px solid $border-col;
+        padding: 8;
+
+        menuitem:hover {
+            color: $accent;
+            text-shadow: 0 0 5px $accent, 0 0 10px $accent;
+        }
+    
+        menuitem {
+            margin-bottom: 2px;
+        }
+    }
 }
 
 scale trough {
@@ -213,7 +230,7 @@ calendar:indeterminate {
 
         &.current {
             color: $accent;
-            text-shadow: 0 0 5px $accent, 0 0 10px $accent;
+            text-shadow: 0 0 5px $accent, 0 0 5px $accent;
         }
     }
 }
